@@ -10,13 +10,11 @@ const {
   getUserByEmailDB,
   saveUserDetailsDB,
   updateUserPasswordDB,
-  saveSocalUserDetailsDB,
-  updateStripeCustomerIdByEmailDB,
 } = require("./service");
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
     const user = await getUserByEmailDB(req.body.email);
 
     if (user) {
@@ -108,34 +106,6 @@ const resetPassword = async (req, res) => {
   }
 };
 
-const socalUserLogin = async (req, res) => {
-  try {
-    const { name, email } = req.body;
-    let user = await getUserByEmailDB(email);
-    if (user) {
-      const JWT = generateJwtToken(user.dataValues);
-      return res.status(200).send({
-        jwt: JWT,
-        data: { name: user.dataValues.name, email: user.dataValues.email },
-      });
-    } else {
-      await saveSocalUserDetailsDB(email, name, req?.body?.role);
-
-      const JWT = generateJwtToken({
-        email: email,
-        name: name,
-      });
-      return res.status(200).send({
-        jwt: JWT,
-        data: { name: name, email: email },
-      });
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(400).send({ message: error.message });
-  }
-};
-
 const checkUser = async (req, res) => {
   try {
     const { email } = req.body;
@@ -145,21 +115,6 @@ const checkUser = async (req, res) => {
     } else {
       res.status(200).send({ newUser: false });
     }
-  } catch (error) {
-    res.status(400).send({ message: error.message });
-  }
-};
-
-const updateStripeCustomerId = async (req, res) => {
-  try {
-    const { email, stripe_customer_id } = req.body;
-
-    if (!email) {
-      return res.status(400).send({ message: "Email is required." });
-    }
-
-    await updateStripeCustomerIdByEmailDB(email, stripe_customer_id);
-    res.status(200).send({ message: "Stripe customer ID updated successfully." });
   } catch (error) {
     res.status(400).send({ message: error.message });
   }
@@ -196,8 +151,6 @@ module.exports = {
   login,
   sentResetOtp,
   resetPassword,
-  socalUserLogin,
   checkUser,
-  updateStripeCustomerId,
   updatePassword
 };

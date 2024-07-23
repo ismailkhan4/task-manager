@@ -25,34 +25,8 @@ const updateUserPasswordDB = async (email, password) => {
   }
 };
 
-const saveSocalUserDetailsDB = async (email, name, role) => {
-  try {
-    return await User.create({ name: name, email: email });
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-
-const updateStripeCustomerIdByEmailDB = async (email, stripeCustomerId) => {
-  try {
-    await User.update(
-      { stripe_customer_id: stripeCustomerId },
-      {
-        where: {
-          email: email,
-        },
-      }
-    );
-  } catch (error) {
-    console.log(error);
-    throw new Error('Failed to update stripe customer ID');
-  }
-};
-
 module.exports = {
   getUserByEmailDB,
   saveUserDetailsDB,
   updateUserPasswordDB,
-  saveSocalUserDetailsDB,
-  updateStripeCustomerIdByEmailDB
 };

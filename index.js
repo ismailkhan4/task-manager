@@ -18,6 +18,7 @@ const {
   login,
 } = require("./src/user/controller");
 const { verifyJwtTown } = require("./src/validations/jwttoken");
+const { createTask, updateTask, deleteTask, getTasks } = require("./src/task/controller");
 
 const validateUserDetails = createValidator(userSchema);
 const validateLoginDetails = createValidator(loginSchema);
@@ -41,61 +42,16 @@ app.use((req, res, next) => {
   }
 });
 
+// USER Endopoints
 app.post("/register", validateUserDetails, registerUser);
 app.post("/login", validateLoginDetails, login);
 
-app.post('/create_task', validateTaskDetails, async (req, res) => {
-  try {
-    const jw = verifyJwtTown(req.headers.authorization.split(' ')[1])
-    if (jw) {
-      await Task.create(req.body)
-      return res.status(200).send({ message: 'Task created successfully' })
-    }
-    res.status(401).send({ message: 'You are not authorized to create Task.' })
-    console.log(req.body, jw)
-  } catch (error) {
-    res.status(400).send({ message: error.message })
-  }
-})
 
-app.put('/update_task', async (req, res) => {
-  try {
-    const jw = verifyJwtTown(req.headers.authorization.split(' ')[1])
-    if (jw) {
-      if (req.body?.taskDescription || req.body?.dueDate) {
-        await Task.update(req.body, {
-          where: {
-            id: req.body.id,
-          },
-        })
-        return res.status(200).send({ message: 'Task updated successfully' })
-      }
-      res.status(401).send({ message: 'Task description or due date is required.' })
-    }
-    res.status(403).send({ message: 'You are not authorized to create Task.' })
-    console.log(req.body, jw)
-  } catch (error) {
-    res.status(400).send({ message: error.message })
-  }
-})
-
-app.delete('/delete_task', async (req, res) => {
-  try {
-    const jw = verifyJwtTown(req.headers.authorization.split(' ')[1])
-    if (jw) {
-      await Task.destroy({
-        where: {
-          id: req.body.id,
-        },
-      })
-      return res.status(200).send({ message: 'Task deleted successfully' })
-    }
-    res.status(403).send({ message: 'You are not authorized to create Task.' })
-    console.log(req.body, jw)
-  } catch (error) {
-    res.status(400).send({ message: error.message })
-  }
-})
+// TASK Endpoints
+app.post('/create_task', validateTaskDetails, createTask)
+app.put('/update_task', validateTaskDetails, updateTask)
+app.delete('/delete_task', deleteTask)
+app.get('/tasks', getTasks)
 
 
 app.listen(port, (error) => {
