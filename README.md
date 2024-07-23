@@ -1,0 +1,1 @@
+Put SECRET_KEY_JWT in .env

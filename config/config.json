@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "pass123",
+    "database": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "pass123",
+    "database": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "postgres",
+    "password": "47d}NFxf[259",
+    "database": "postgres",
+    "host": "postgres.c9yqu6u0iyko.eu-west-3.rds.amazonaws.com",
+    "port": 5432,
+    "dialect": "postgres"
+  }
+}
